@@ -18,7 +18,7 @@
  *
  * @package   SkyVerge/WooCommerce/API/Request
  * @author    SkyVerge
- * @copyright Copyright (c) 2013-2016, SkyVerge, Inc.
+ * @copyright Copyright (c) 2013-2017, SkyVerge, Inc.
  * @license   http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -33,6 +33,14 @@ if ( ! class_exists( 'SV_WC_API_XML_Request' ) ) :
  */
 abstract class SV_WC_API_XML_Request implements SV_WC_API_Request {
 
+	/** @var string the request method, one of HEAD, GET, PUT, PATCH, POST, DELETE */
+	protected $method;
+
+	/** @var string the request path */
+	protected $path = '';
+
+	/** @var array the request parameters */
+	protected $params = array();
 
 	/** @var array request data */
 	protected $request_data;
@@ -51,18 +59,34 @@ abstract class SV_WC_API_XML_Request implements SV_WC_API_Request {
 	 * Get the method for this request.
 	 *
 	 * @since 4.3.0
+	 * @see SV_WC_API_Request::get_method()
+	 * @return null|string
 	 */
-	public function get_method() { }
+	public function get_method() {
+		return $this->method;
+	}
 
 
 	/**
 	 * Get the path for this request.
 	 *
 	 * @since 4.3.0
+	 * @see SV_WC_API_Request::get_path()
 	 * @return string
 	 */
 	public function get_path() {
-		return '';
+		return $this->path;
+	}
+
+
+	/**
+	 * Get the request parameters.
+	 *
+	 * @since 4.5.0
+	 * @return array
+	 */
+	public function get_params() {
+		return $this->params;
 	}
 
 

@@ -1,25 +1,25 @@
-# Copyright (C) 2016 WooThemes / SkyVerge
+# Copyright (C) 2017 SkyVerge
 # This file is distributed under the GNU General Public License v3.0.
 msgid ""
 msgstr ""
-"Project-Id-Version: WooCommerce Cost of Goods 2.2.7\n"
+"Project-Id-Version: WooCommerce Cost of Goods 2.3.0\n"
 "Report-Msgid-Bugs-To: https://woocommerce.com/my-account/tickets/\n"
 "POT-Creation-Date: 2014-06-15 22:41:24+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2016-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2017-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 
-#: includes/admin/class-wc-cog-admin-orders.php:98
-#: includes/admin/class-wc-cog-admin-orders.php:337
+#: includes/admin/class-wc-cog-admin-orders.php:97
+#: includes/admin/class-wc-cog-admin-orders.php:345
 msgid "Cost of Goods"
 msgstr ""
 
 #: includes/admin/class-wc-cog-admin-products.php:128
 #: includes/admin/class-wc-cog-admin-products.php:148
-#: includes/admin/class-wc-cog-admin-products.php:528
+#: includes/admin/class-wc-cog-admin-products.php:533
 #. translators: Placeholder: %s - currency symbol
 msgid "Cost of Good (%s)"
 msgstr ""
@@ -37,32 +37,32 @@ msgstr ""
 msgid "Cost of Good: (%s)"
 msgstr ""
 
-#: includes/admin/class-wc-cog-admin-products.php:363
+#: includes/admin/class-wc-cog-admin-products.php:365
 msgid "Cost of Good"
 msgstr ""
 
-#: includes/admin/class-wc-cog-admin-products.php:368
+#: includes/admin/class-wc-cog-admin-products.php:370
 msgid "— No Change —"
 msgstr ""
 
-#: includes/admin/class-wc-cog-admin-products.php:369
+#: includes/admin/class-wc-cog-admin-products.php:371
 msgid "Change to:"
 msgstr ""
 
-#: includes/admin/class-wc-cog-admin-products.php:370
+#: includes/admin/class-wc-cog-admin-products.php:372
 msgid "Increase by (fixed amount or %):"
 msgstr ""
 
-#: includes/admin/class-wc-cog-admin-products.php:371
+#: includes/admin/class-wc-cog-admin-products.php:373
 msgid "Decrease by (fixed amount or %):"
 msgstr ""
 
-#: includes/admin/class-wc-cog-admin-products.php:381
+#: includes/admin/class-wc-cog-admin-products.php:383
 msgid "Enter Cost:"
 msgstr ""
 
-#: includes/admin/class-wc-cog-admin-products.php:460
-#: includes/admin/class-wc-cog-admin-products.php:572
+#: includes/admin/class-wc-cog-admin-products.php:463
+#: includes/admin/class-wc-cog-admin-products.php:577
 msgid "Cost"
 msgstr ""
 
@@ -164,7 +164,7 @@ msgstr ""
 msgid "Database error while applying product costs."
 msgstr ""
 
-#: includes/admin/class-wc-cog-admin.php:364
+#: includes/admin/class-wc-cog-admin.php:366
 #. translators: Placeholders: %d - number of orders updated.
 msgid "%d order updated."
 msgid_plural "%d orders updated."
@@ -195,15 +195,15 @@ msgstr ""
 msgid "Export CSV"
 msgstr ""
 
-#: includes/admin/reports/class-wc-cog-admin-report-product-valuation.php:132
+#: includes/admin/reports/class-wc-cog-admin-report-product-valuation.php:142
 msgid "Value at Retail"
 msgstr ""
 
-#: includes/admin/reports/class-wc-cog-admin-report-product-valuation.php:133
+#: includes/admin/reports/class-wc-cog-admin-report-product-valuation.php:143
 msgid "Value at Cost"
 msgstr ""
 
-#: includes/admin/reports/class-wc-cog-admin-report-product-valuation.php:156
+#: includes/admin/reports/class-wc-cog-admin-report-product-valuation.php:166
 msgid "Search for a product"
 msgstr ""
 
@@ -402,17 +402,17 @@ msgstr ""
 msgid "WooCommerce Cost of Goods"
 msgstr ""
 
-#: woocommerce-cost-of-goods.php:526 woocommerce-cost-of-goods.php:590
+#: woocommerce-cost-of-goods.php:487 woocommerce-cost-of-goods.php:553
 #. translators: Placeholders: %s - error messages
 msgid "Error upgrading <strong>WooCommerce Cost of Goods</strong>: %s"
 msgstr ""
 
-#: woocommerce-cost-of-goods.php:527 woocommerce-cost-of-goods.php:591
+#: woocommerce-cost-of-goods.php:488 woocommerce-cost-of-goods.php:554
 msgid "&laquo; Go Back"
 msgstr ""
 
 #. Plugin URI of the plugin/theme
-msgid "http://www.woothemes.com/products/woocommerce-cost-of-goods/"
+msgid "http://www.woocommerce.com/products/woocommerce-cost-of-goods/"
 msgstr ""
 
 #. Description of the plugin/theme
@@ -422,9 +422,9 @@ msgid ""
 msgstr ""
 
 #. Author of the plugin/theme
-msgid "WooThemes / SkyVerge"
+msgid "SkyVerge"
 msgstr ""
 
 #. Author URI of the plugin/theme
-msgid "http://www.woothemes.com"
+msgid "http://www.woocommerce.com"
 msgstr ""

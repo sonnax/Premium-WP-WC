@@ -1,5 +1,10 @@
 *** WooCommerce Cost of Goods Changelog ***
 
+2017.03.28 - version 2.3.0
+ * Tweak - Improve the accuracy of the total valuation report
+ * Misc - Added support for WooCommerce 3.0
+ * Misc - Removed support for WooCommerce 2.4
+
 2016.12.14 - version 2.2.7
  * Fix - Products with costs under $1 not included in some reports
 

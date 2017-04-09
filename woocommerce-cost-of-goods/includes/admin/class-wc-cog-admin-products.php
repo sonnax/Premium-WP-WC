@@ -14,11 +14,11 @@
  *
  * Do not edit or add to this file if you wish to upgrade WooCommerce Cost of Goods to newer
  * versions in the future. If you wish to customize WooCommerce Cost of Goods for your
- * needs please refer to http://docs.woothemes.com/document/cost-of-goods/ for more information.
+ * needs please refer to http://docs.woocommerce.com/document/cost-of-goods/ for more information.
  *
  * @package     WC-COG/Admin/Products
  * @author      SkyVerge
- * @copyright   Copyright (c) 2013-2016, SkyVerge, Inc.
+ * @copyright   Copyright (c) 2013-2017, SkyVerge, Inc.
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -327,26 +327,28 @@ class WC_COG_Admin_Products {
 			return;
 		}
 
-		update_post_meta( $product->id, '_wc_cog_cost_variable', wc_format_decimal( $cost ) );
+		SV_WC_Product_Compatibility::update_meta_data( $product, '_wc_cog_cost_variable', wc_format_decimal( $cost ) );
 
 		foreach ( $product->get_children() as $child_id ) {
 
-			$child_cost = get_post_meta( $child_id, '_wc_cog_cost', true );
+			if ( $child_product = wc_get_product( $child_id ) ) {
 
-			$is_default = 'yes' === get_post_meta( $child_id, '_wc_cog_default_cost', true );
+				$child_cost = SV_WC_Product_Compatibility::get_meta( $child_product, '_wc_cog_cost', true );
+				$is_default = 'yes' === SV_WC_Product_Compatibility::get_meta( $child_product, '_wc_cog_default_cost', true );
 
-			if ( '' === $child_cost || $is_default ) {
-				update_post_meta( $child_id, '_wc_cog_cost', wc_format_decimal( $cost ) );
-				update_post_meta( $child_id, '_wc_cog_default_cost', '' !== $cost ? 'yes' : 'no' );
+				if ( '' === $child_cost || $is_default ) {
+					SV_WC_Product_Compatibility::update_meta_data( $child_product, '_wc_cog_cost', wc_format_decimal( $cost ) );
+					SV_WC_Product_Compatibility::update_meta_data( $child_product, '_wc_cog_default_cost', '' !== $cost ? 'yes' : 'no' );
+				}
 			}
 		}
 
 		// get the minimum and maximum costs associated with the product
-		list( $min_variation_cost, $max_variation_cost ) = WC_COG_Product::get_variable_product_min_max_costs( $product->id );
+		list( $min_variation_cost, $max_variation_cost ) = WC_COG_Product::get_variable_product_min_max_costs( SV_WC_Product_Compatibility::get_prop( $product, 'id' ) );
 
-		update_post_meta( $product->id, '_wc_cog_cost',               wc_format_decimal( $min_variation_cost ) );
-		update_post_meta( $product->id, '_wc_cog_min_variation_cost', wc_format_decimal( $min_variation_cost ) );
-		update_post_meta( $product->id, '_wc_cog_max_variation_cost', wc_format_decimal( $max_variation_cost ) );
+		SV_WC_Product_Compatibility::update_meta_data( $product, '_wc_cog_cost',               wc_format_decimal( $min_variation_cost ) );
+		SV_WC_Product_Compatibility::update_meta_data( $product, '_wc_cog_min_variation_cost', wc_format_decimal( $min_variation_cost ) );
+		SV_WC_Product_Compatibility::update_meta_data( $product, '_wc_cog_max_variation_cost', wc_format_decimal( $max_variation_cost ) );
 	}
 
 
@@ -389,6 +391,7 @@ class WC_COG_Admin_Products {
 	 * Save the cost bulk edit field
 	 *
 	 * @since 1.0
+	 * @param \WC_Product $product A product object.
 	 */
 	public function save_cost_field_bulk_edit( $product ) {
 
@@ -396,7 +399,7 @@ class WC_COG_Admin_Products {
 
 			$option_selected       = absint( $_REQUEST['change_cost_of_good'] );
 			$requested_cost_change = stripslashes( $_REQUEST['_cost_of_good'] );
-			$current_cost_value    = WC_COG_Product::get_cost( $product->id );
+			$current_cost_value    = WC_COG_Product::get_cost( SV_WC_Product_Compatibility::get_prop( $product, 'id' ) );
 
 			switch ( $option_selected ) {
 
@@ -437,7 +440,7 @@ class WC_COG_Admin_Products {
 				if ( $product->is_type( 'variable' ) ) {
 					$this->update_variable_product_cost( $product, $new_cost );
 				} else {
-					update_post_meta( $product->id, '_wc_cog_cost', wc_format_decimal( $new_cost ) );
+					SV_WC_Product_Compatibility::update_meta_data( $product, '_wc_cog_cost', wc_format_decimal( $new_cost ) );
 				}
 			}
 		}
@@ -473,14 +476,16 @@ class WC_COG_Admin_Products {
 	 * @param string $column the current column slug
 	 */
 	public function add_quick_edit_inline_values( $column ) {
+		/* @type \WC_Product $the_product */
 		global $the_product;
 
 		if ( 'name' === $column ) {
 
-			$meta_key = $the_product->is_type( 'variable' ) ? 'wc_cog_cost_variable' : 'wc_cog_cost';
+			$meta_key   = $the_product->is_type( 'variable' ) ? 'wc_cog_cost_variable' : 'wc_cog_cost';
+			$meta_value = SV_WC_Product_Compatibility::get_meta( $the_product, $meta_key, true );
 
-			echo '<div id="wc_cog_inline_' . esc_attr( $the_product->id ) . '" class="hidden">';
-				echo '<div class="cost">' . esc_html( $the_product->$meta_key ) . '</div>';
+			echo '<div id="wc_cog_inline_' . esc_attr( SV_WC_Product_Compatibility::get_prop( $the_product, 'id' ) ) . '" class="hidden">';
+				echo '<div class="cost">' . esc_html( $meta_value ) . '</div>';
 			echo '</div>';
 		}
 	}
@@ -499,7 +504,7 @@ class WC_COG_Admin_Products {
 		if ( $product->is_type( 'variable' ) ) {
 			$this->update_variable_product_cost( $product, $cost );
 		} else {
-			update_post_meta( $product->id, '_wc_cog_cost', wc_format_decimal( $cost ) );
+			SV_WC_Product_Compatibility::update_meta_data( $product, '_wc_cog_cost', wc_format_decimal( $cost ) );
 		}
 	}
 
@@ -584,9 +589,10 @@ class WC_COG_Admin_Products {
 	 * @param string $column column id
 	 */
 	public function product_list_table_cost_column( $column ) {
+		/* @type \WC_Product $the_product */
 		global $post, $the_product;
 
-		if ( empty( $the_product ) || $the_product->id !== $post->ID ) {
+		if ( ! $the_product instanceof WC_Product || SV_WC_Product_Compatibility::get_prop( $the_product, 'id' ) !== $post->ID ) {
 			$the_product = wc_get_product( $post );
 		}
 

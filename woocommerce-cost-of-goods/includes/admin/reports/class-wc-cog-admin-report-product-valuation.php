@@ -14,11 +14,11 @@
  *
  * Do not edit or add to this file if you wish to upgrade WooCommerce Cost of Goods to newer
  * versions in the future. If you wish to customize WooCommerce Cost of Goods for your
- * needs please refer to http://docs.woothemes.com/document/cost-of-goods/ for more information.
+ * needs please refer to http://docs.woocommerce.com/document/cost-of-goods/ for more information.
  *
  * @package     WC-COG/Reports
  * @author      SkyVerge
- * @copyright   Copyright (c) 2013-2016, SkyVerge, Inc.
+ * @copyright   Copyright (c) 2013-2017, SkyVerge, Inc.
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -48,6 +48,7 @@ class WC_COG_Admin_Report_Product_Valuation extends WC_Report_Stock {
 	 * @param string $column_name
 	 */
 	public function column_default( $item, $column_name ) {
+		$GLOBALS['product'] = $item->product;
 
 		if ( 'value_at_retail' === $column_name ) {
 
@@ -59,57 +60,66 @@ class WC_COG_Admin_Report_Product_Valuation extends WC_Report_Stock {
 
 		} else {
 
-			return parent::column_default( $item, $column_name );
+			parent::column_default( $item, $column_name );
 		}
 	}
 
 
 	/**
-	 * Get all products (except parent variable products) that are published,
-	 * managing stock = yes, have at least 1 unit in stock and have a non-zero
-	 * positive cost
+	 * Get all simple & variation products that are published and managing stock = yes
+	 * and calculate the value at retail & value at cost.
 	 *
 	 * @since 2.0.0
 	 * @param int $current_page
 	 * @param int $per_page
 	 */
 	public function get_items( $current_page, $per_page ) {
-		global $wpdb;
-
 		$this->max_items = 0;
 		$this->items     = array();
 
-		$query_from = "FROM {$wpdb->posts} as posts
-			INNER JOIN {$wpdb->postmeta} AS postmeta ON posts.ID = postmeta.post_id
-			INNER JOIN {$wpdb->postmeta} AS postmeta2 ON posts.ID = postmeta2.post_id
-			INNER JOIN {$wpdb->postmeta} AS postmeta3 on posts.ID = postmeta3.post_id
-			WHERE posts.post_type IN ( 'product', 'product_variation' )
-			AND posts.post_status = 'publish'
-			AND postmeta.meta_key = '_manage_stock' AND postmeta.meta_value = 'yes'
-			AND postmeta2.meta_key = '_stock' AND CAST(postmeta2.meta_value AS SIGNED) > 0
-			AND postmeta3.meta_key = '_wc_cog_cost' AND CAST(postmeta3.meta_value AS DECIMAL) > 0
-		";
+		$args = array(
+			'post_type'      => array( 'product', 'product_variation' ),
+			'fields'         => 'ids',
+			'posts_per_page' => $per_page,
+			'offset'         => ( $current_page - 1 ) * $per_page,
+			'post_status'    => 'publish',
+			'orderby'        => 'title',
+			'order'          => 'ASC',
+		);
 
-		// add search query if present
+		// search query
 		if ( ! empty( $_POST['s'] ) ) {
-
-			$query_from = $wpdb->prepare( $query_from . ' AND posts.post_title LIKE %s', '%' . $wpdb->esc_like( $_POST['s'] ) . '%' );
+			$args['s'] = $_POST['s'];
 		}
 
-		$query_limit = $wpdb->prepare( 'LIMIT %d, %d', ( $current_page - 1 ) * $per_page, $per_page );
+		$query = new WP_Query( $args );
 
-		$items = $wpdb->get_results( "SELECT posts.ID as id, posts.post_parent as parent {$query_from} GROUP BY posts.ID ORDER BY posts.post_title DESC {$query_limit};" );
+		$this->max_items = $query->found_posts;
 
-		$this->max_items = $wpdb->get_var( "SELECT COUNT( DISTINCT posts.ID ) {$query_from};" );
+		foreach ( $query->posts as $product_id ) {
 
-		foreach ( (array) $items as $item ) {
+			$product = wc_get_product( $product_id );
 
-			$product = wc_get_product( $item->id );
+			if ( ! $product->managing_stock() || $product->is_type( 'variable' ) ) {
+				continue;
+			}
 
-			$total_stock = $product->get_total_stock();
+			$item          = new stdClass();
+			$item->id      = $product->get_id();
+			$item->product = $product;
 
-			$item->value_at_retail = $product->get_price() * $total_stock;
-			$item->value_at_cost   = WC_COG_Product::get_cost( $product ) * $total_stock;
+			if ( $product->is_type( 'variation' ) ) {
+				$item->parent  = SV_WC_Plugin_Compatibility::is_wc_version_gte_3_0() ? $product->get_parent_id() : $product->parent->id;
+			} else {
+				$item->parent = 0;
+			}
+
+			$stock_qty = (int) $product->get_stock_quantity();
+			$cost      = (float) WC_COG_Product::get_cost( $product );
+			$price     = (float) $product->get_price();
+
+			$item->value_at_retail = $price * $stock_qty;
+			$item->value_at_cost   = $cost * $stock_qty;
 
 			$this->items[] = $item;
 		}

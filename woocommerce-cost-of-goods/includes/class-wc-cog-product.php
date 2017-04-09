@@ -14,11 +14,11 @@
  *
  * Do not edit or add to this file if you wish to upgrade WooCommerce Cost of Goods to newer
  * versions in the future. If you wish to customize WooCommerce Cost of Goods for your
- * needs please refer to http://docs.woothemes.com/document/cost-of-goods/ for more information.
+ * needs please refer to http://docs.woocommerce.com/document/cost-of-goods/ for more information.
  *
  * @package     WC-COG/Classes
  * @author      SkyVerge
- * @copyright   Copyright (c) 2013-2016, SkyVerge, Inc.
+ * @copyright   Copyright (c) 2013-2017, SkyVerge, Inc.
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -54,27 +54,24 @@ class WC_COG_Product {
 			return '';
 		}
 
-		// get the product id
-		$product_id = SV_WC_Plugin_Compatibility::product_get_id( $product );
-
 		// get the product cost
 		if ( $product->is_type( 'variable' ) ) {
-			$cost = get_post_meta( $product_id, '_wc_cog_cost_variable', true );
+			$cost = SV_WC_Product_Compatibility::get_meta( $product, '_wc_cog_cost_variable', true );
 		} else {
-			$cost = get_post_meta( $product_id, '_wc_cog_cost', true );
+			$cost = SV_WC_Product_Compatibility::get_meta( $product, '_wc_cog_cost', true );
 		}
 
 		// if no cost set for product variation, check if a default cost exists for the parent variable product
 		if ( '' === $cost && $product->is_type( 'variation' ) ) {
-			$cost = get_post_meta( $product->id, '_wc_cog_cost_variable', true );
+			$cost = $cost = SV_WC_Product_Compatibility::get_meta( $product, '_wc_cog_cost_variable', true );
 		}
 
 		/**
-		 * Filters the prdouct cost
+		 * Filters the product cost.
 		 *
 		 * @since 2.2.3
-		 * @param float|string product cost if configured, the empty string otherwise
-		 * @param WC_Product the product
+		 * @param float|string Product cost if configured, empty string otherwise.
+		 * @param \WC_Product $product The product.
 		 */
 		return apply_filters( 'wc_cost_of_goods_product_cost', $cost, $product );
 	}
@@ -91,7 +88,7 @@ class WC_COG_Product {
 	public static function get_variable_product_min_max_costs( $product ) {
 
 		// get the product id
-		$product_id = is_object( $product ) ? $product->id : $product;
+		$product_id = is_object( $product ) ? SV_WC_Product_Compatibility::get_prop( $product, 'id' ) : $product;
 
 		// get all child variations
 		$children = get_posts( array(
@@ -151,7 +148,11 @@ class WC_COG_Product {
 			} else {
 
 				if ( $min_variation_cost !== $max_variation_cost ) {
-					$cost .= $product->get_price_html_from_text();
+					if ( SV_WC_Plugin_Compatibility::is_wc_version_gte_3_0() ) {
+						$cost .= wc_get_price_html_from_text();
+					} else {
+						$cost .= $product->get_price_html_from_text();
+					}
 				}
 
 				$cost .= wc_price( $min_variation_cost );

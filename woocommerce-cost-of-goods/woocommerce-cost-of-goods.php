@@ -1,15 +1,15 @@
 <?php
 /**
  * Plugin Name: WooCommerce Cost of Goods
- * Plugin URI: http://www.woothemes.com/products/woocommerce-cost-of-goods/
+ * Plugin URI: http://www.woocommerce.com/products/woocommerce-cost-of-goods/
  * Description: A full-featured cost of goods management extension for WooCommerce, with detailed reporting for total cost and profit
- * Author: WooThemes / SkyVerge
- * Author URI: http://www.woothemes.com
- * Version: 2.2.7
+ * Author: SkyVerge
+ * Author URI: http://www.woocommerce.com
+ * Version: 2.3.0
  * Text Domain: woocommerce-cost-of-goods
  * Domain Path: /i18n/languages/
  *
- * Copyright: (c) 2013-2016 SkyVerge, Inc. (info@skyverge.com)
+ * Copyright: (c) 2013-2017, SkyVerge, Inc. (info@skyverge.com)
  *
  * License: GNU General Public License v3.0
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -17,7 +17,7 @@
  * @package   WC-Cost-of-Goods
  * @author    SkyVerge
  * @category  Inventory
- * @copyright Copyright (c) 2013-2016, SkyVerge, Inc.
+ * @copyright Copyright (c) 2013-2017, SkyVerge, Inc.
  * @license   http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -41,10 +41,10 @@ if ( ! class_exists( 'SV_WC_Framework_Bootstrap' ) ) {
 	require_once( plugin_dir_path( __FILE__ ) . 'lib/skyverge/woocommerce/class-sv-wc-framework-bootstrap.php' );
 }
 
-SV_WC_Framework_Bootstrap::instance()->register_plugin( '4.4.0', __( 'WooCommerce Costs of Goods', 'woocommerce-cost-of-goods' ), __FILE__, 'init_woocommerce_cost_of_goods', array(
-	'minimum_wc_version'   => '2.4.13',
+SV_WC_Framework_Bootstrap::instance()->register_plugin( '4.6.0', __( 'WooCommerce Costs of Goods', 'woocommerce-cost-of-goods' ), __FILE__, 'init_woocommerce_cost_of_goods', array(
+	'minimum_wc_version'   => '2.5.5',
 	'minimum_wp_version'   => '4.1',
-	'backwards_compatible' => '4.4.0',
+	'backwards_compatible' => '4.4',
 ) );
 
 function init_woocommerce_cost_of_goods() {
@@ -105,16 +105,13 @@ class WC_COG extends SV_WC_Plugin {
 
 
 	/** plugin version number */
-	const VERSION = '2.2.7';
+	const VERSION = '2.3.0';
 
 	/** @var WC_COG single instance of this plugin */
 	protected static $instance;
 
 	/** plugin id */
 	const PLUGIN_ID = 'cog';
-
-	/** plugin text domain, DEPRECATED as of 1.10.0 */
-	const TEXT_DOMAIN = 'woocommerce-cost-of-goods';
 
 	/** @var \WC_COG_Admin instance plugin admin */
 	protected $admin;
@@ -136,7 +133,13 @@ class WC_COG extends SV_WC_Plugin {
 	 */
 	public function __construct() {
 
-		parent::__construct( self::PLUGIN_ID, self::VERSION );
+		parent::__construct(
+			self::PLUGIN_ID,
+			self::VERSION,
+			array(
+				'text_domain' => 'woocommerce-cost-of-goods',
+			)
+		);
 
 		// include required files
 		add_action( 'sv_wc_framework_plugins_loaded', array( $this, 'includes' ) );
@@ -232,48 +235,6 @@ class WC_COG extends SV_WC_Plugin {
 	}
 
 
-	/**
-	 * Backwards compat for changing the visibility of some class instances.
-	 *
-	 * @TODO Remove this as part of WC 2.7 compat {BR 2016-05-18}
-	 *
-	 * @since 2.0.0
-	 */
-	public function __get( $name ) {
-
-		switch ( $name ) {
-
-			case 'admin':
-				_deprecated_function( 'wc_cog()->admin', '2.0.0', 'wc_cog()->get_admin_instance()' );
-				return $this->get_admin_instance();
-
-			case 'reports':
-				_deprecated_function( 'wc_cog()->reports', '2.0.0', 'wc_cog()->get_admin_reports_instance()' );
-				return $this->get_admin_reports_instance();
-
-			case 'import_export_handler':
-				_deprecated_function( 'wc_cog()->import_export_handler', '2.0.0', 'wc_cog()->get_import_export_handler_instance()' );
-				return $this->get_import_export_handler_instance();
-		}
-
-		// you're probably doing it wrong
-		trigger_error( 'Call to undefined property ' . __CLASS__ . '::' . $name, E_USER_ERROR );
-		return null;
-	}
-
-
-	/**
-	 * Load plugin text domain.
-	 *
-	 * @since 1.0
-	 * @see SV_WC_Plugin::load_translation()
-	 */
-	public function load_translation() {
-
-		load_plugin_textdomain( 'woocommerce-cost-of-goods', false, dirname( plugin_basename( $this->get_file() ) ) . '/i18n/languages' );
-	}
-
-
 	/** Checkout processing methods *******************************************/
 
 	/**
@@ -293,8 +254,8 @@ class WC_COG extends SV_WC_Plugin {
 		foreach ( $order->get_items() as $item_id => $item ) {
 
 			$product_id = ( ! empty( $item['variation_id'] ) ) ? $item['variation_id'] : $item['product_id'];
-
-			$item_cost = WC_COG_Product::get_cost( $product_id );
+			$item_cost  = (float) WC_COG_Product::get_cost( $product_id );
+			$quantity   = (float) $item['qty'];
 
 			/**
 			 * Order Item Cost Filer.
@@ -306,12 +267,12 @@ class WC_COG extends SV_WC_Plugin {
 			 * @param array $item order item
 			 * @param \WC_Order $order order object
 			 */
-			$item_cost = apply_filters( 'wc_cost_of_goods_set_order_item_cost_meta_item_cost', $item_cost, $item, $order );
+			$item_cost = (float) apply_filters( 'wc_cost_of_goods_set_order_item_cost_meta_item_cost', $item_cost, $item, $order );
 
-			$this->set_item_cost_meta( $item_id, $item_cost, $item['qty'] );
+			$this->set_item_cost_meta( $item_id, $item_cost, $quantity );
 
 			// add to the item cost to the total order cost.
-			$total_cost += ( $item_cost * $item['qty'] );
+			$total_cost += ( $item_cost * $quantity );
 		}
 
 		/**
@@ -328,7 +289,7 @@ class WC_COG extends SV_WC_Plugin {
 		$formatted_total_cost = wc_format_decimal( $total_cost, wc_get_price_decimals() );
 
 		// save the order total cost meta.
-		update_post_meta( $order_id, '_wc_cog_order_total_cost', $formatted_total_cost );
+		SV_WC_Order_Compatibility::update_meta_data( $order, '_wc_cog_order_total_cost', $formatted_total_cost );
 	}
 
 
@@ -403,7 +364,7 @@ class WC_COG extends SV_WC_Plugin {
 	 * @param string $_ unused
 	 * @return string URL to the settings page
 	 */
-	public function get_settings_url( $_ = '' ) {
+	public function get_settings_url( $_ = null ) {
 		return admin_url( 'admin.php?page=wc-settings&tab=products&section=inventory' );
 	}
 
@@ -416,7 +377,7 @@ class WC_COG extends SV_WC_Plugin {
 	 * @return string documentation URL
 	 */
 	public function get_documentation_url() {
-		return 'http://docs.woothemes.com/document/cost-of-goods-sold/';
+		return 'https://docs.woocommerce.com/document/cost-of-goods-sold/';
 	}
 
 
@@ -442,7 +403,7 @@ class WC_COG extends SV_WC_Plugin {
 	 * @return string
 	 */
 	public function get_support_url() {
-		return 'http://support.woothemes.com/';
+		return 'https://woocommerce.com/my-account/tickets/';
 	}
 
 
@@ -534,15 +495,14 @@ class WC_COG extends SV_WC_Plugin {
 
 						$cost = WC_COG_Product::get_cost( $product_id );
 
-						if ( '' === $cost ) {
+						if ( '' === $cost && ( $product = wc_get_product( $product_id ) ) ) {
 
 							// get the minimum and maximum costs associated with the product
 							list( $min_variation_cost, $max_variation_cost ) = WC_COG_Product::get_variable_product_min_max_costs( $product_id );
 
-							update_post_meta( $product_id, '_wc_cog_cost',               wc_format_decimal( $min_variation_cost ) );
-							update_post_meta( $product_id, '_wc_cog_min_variation_cost', wc_format_decimal( $min_variation_cost ) );
-							update_post_meta( $product_id, '_wc_cog_max_variation_cost', wc_format_decimal( $max_variation_cost ) );
-
+							SV_WC_Product_Compatibility::update_meta_data( $product, '_wc_cog_cost',               wc_format_decimal( $min_variation_cost ) );
+							SV_WC_Product_Compatibility::update_meta_data( $product, '_wc_cog_min_variation_cost', wc_format_decimal( $min_variation_cost ) );
+							SV_WC_Product_Compatibility::update_meta_data( $product, '_wc_cog_max_variation_cost', wc_format_decimal( $max_variation_cost ) );
 						}
 					}
 				}
@@ -581,50 +541,57 @@ class WC_COG extends SV_WC_Plugin {
 					),
 				) );
 
-				// some sort of bad database error: deactivate the plugin and display an error
+				// Some sort of bad database error: deactivate the plugin and display an error.
 				if ( is_wp_error( $product_ids ) ) {
+
 					require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-					deactivate_plugins( 'woocommerce-cost-of-goods/woocommerce-cost-of-goods.php' );  // hardcode the plugin path so that we can use symlinks in development
+
+					// Hardcode the plugin path so that we can use symlinks in development.
+					deactivate_plugins( 'woocommerce-cost-of-goods/woocommerce-cost-of-goods.php' );
 
 					/* translators: Placeholders: %s - error messages */
 					wp_die( sprintf( __( 'Error upgrading <strong>WooCommerce Cost of Goods</strong>: %s', 'woocommerce-cost-of-goods' ), '<ul><li>' . implode( '</li><li>', $product_ids->get_error_messages() ) . '</li></ul>' ) .
 						'<a href="' . admin_url( 'plugins.php' ) . '">' . __( '&laquo; Go Back', 'woocommerce-cost-of-goods' ) . '</a>' );
-				}
 
-				// otherwise go through the results and set the min/max/cost
-				if ( is_array( $product_ids ) ) {
+				// ...Otherwise go through the results and set the min/max/cost.
+				} elseif ( is_array( $product_ids ) ) {
 
 					foreach ( $product_ids as $product_id ) {
 
-						$default_cost = get_post_meta( $product_id, '_wc_cog_cost_variable', true );
+						if ( $product = wc_get_product( $product_id ) ) {
 
-						// get all child variations
-						$children = get_posts( array(
-							'post_parent'    => $product_id,
-							'posts_per_page' => -1,
-							'post_type'      => 'product_variation',
-							'fields'         => 'ids',
-							'post_status'    => 'publish',
-						) );
+							$default_cost = SV_WC_Product_Compatibility::get_meta( $product, '_wc_cog_cost_variable', true );
 
-						if ( $children ) {
+							// get all child variations
+							$children = get_posts( array(
+								'post_parent'    => $product_id,
+								'posts_per_page' => -1,
+								'post_type'      => 'product_variation',
+								'fields'         => 'ids',
+								'post_status'    => 'publish',
+							) );
 
-							foreach ( $children as $child_product_id ) {
+							if ( $children ) {
 
-								// cost set at the child level?
-								$cost = get_post_meta( $child_product_id, '_wc_cog_cost', true );
+								foreach ( $children as $child_product_id ) {
 
-								if ( '' === $cost && '' !== $default_cost ) {
-									// using the default parent cost
-									update_post_meta( $child_product_id, '_wc_cog_cost', wc_format_decimal( $default_cost ) );
-									update_post_meta( $child_product_id, '_wc_cog_default_cost', 'yes' );
-								} else {
-									// otherwise no default cost
-									update_post_meta( $child_product_id, '_wc_cog_default_cost', 'no' );
+									// cost set at the child level?
+									$cost = SV_WC_Product_Compatibility::get_meta( $child_product_id, '_wc_cog_cost', true );
+
+									if ( $child_product = wc_get_product( $child_product_id ) ) {
+
+										if ( '' === $cost && '' !== $default_cost ) {
+											// using the default parent cost
+											SV_WC_Product_Compatibility::update_meta_data( $child_product, '_wc_cog_cost', wc_format_decimal( $default_cost ) );
+											SV_WC_Product_Compatibility::update_meta_data( $child_product, '_wc_cog_default_cost', 'yes' );
+										} else {
+											// otherwise no default cost
+											SV_WC_Product_Compatibility::update_meta_data( $child_product, '_wc_cog_default_cost', 'no' );
+										}
+									}
 								}
 							}
 						}
-
 					}
 				}
 

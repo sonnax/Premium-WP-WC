@@ -14,11 +14,11 @@
  *
  * Do not edit or add to this file if you wish to upgrade WooCommerce Cost of Goods to newer
  * versions in the future. If you wish to customize WooCommerce Cost of Goods for your
- * needs please refer to http://docs.woothemes.com/document/cost-of-goods/ for more information.
+ * needs please refer to http://docs.woocommerce.com/document/cost-of-goods/ for more information.
  *
  * @package     WC-COG/Admin
  * @author      SkyVerge
- * @copyright   Copyright (c) 2013-2016, SkyVerge, Inc.
+ * @copyright   Copyright (c) 2013-2017, SkyVerge, Inc.
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -218,7 +218,7 @@ class WC_COG_Admin {
 		<tr valign="top">
 			<th scope="row" class="titledesc">
 				<label for="<?php echo esc_attr( $field['id'] ); ?>"><?php esc_html_e( 'Apply Costs to Previous Orders', 'woocommerce-cost-of-goods' ); ?></label>
-				<?php echo SV_WC_Plugin_Compatibility::wc_help_tip( __( 'This will apply costs to previous orders based on your selection when "Apply Costs" is clicked and cannot be reversed.', 'woocommerce-cost-of-goods' ) ); ?>
+				<?php echo wc_help_tip( __( 'This will apply costs to previous orders based on your selection when "Apply Costs" is clicked and cannot be reversed.', 'woocommerce-cost-of-goods' ) ); ?>
 			</th>
 			<td class="forminp forminp-<?php echo sanitize_html_class( $field['type'] ) ?>">
 				<fieldset>
@@ -280,7 +280,7 @@ class WC_COG_Admin {
 	 */
 	public function handle_settings_actions() {
 
-		$current_action = ( empty( $_REQUEST['action'] ) )  ? null : sanitize_text_field( urldecode( $_REQUEST['action'] ) );
+		$current_action = empty( $_REQUEST['action'] ) ? null : sanitize_text_field( urldecode( $_REQUEST['action'] ) );
 
 		if ( wc_cog()->is_plugin_settings() ) {
 
@@ -341,8 +341,8 @@ class WC_COG_Admin {
 							$order = wc_get_order( $order_id );
 
 							foreach ( $order->get_refunds() as $refund ) {
-
-								$this->get_orders_instance()->add_refund_order_costs( $refund->id );
+								/* @type \WC_Order_Refund $refund */
+								$this->get_orders_instance()->add_refund_order_costs( SV_WC_Order_Compatibility::get_prop( $refund, 'id' ) );
 							}
 
 							$success_count++;
@@ -351,7 +351,9 @@ class WC_COG_Admin {
 
 					// increment offset if we're applying costs to *all* existing orders, paging through them set by set
 					if ( 'apply_costs_all' === $current_action ) {
+
 						$offset += $posts_per_page;
+
 						update_option( 'wc_cog_apply_costs_offset', $offset );
 					}
 
@@ -366,8 +368,7 @@ class WC_COG_Admin {
 				// clear report transients
 				wc_cog()->get_admin_reports_instance()->clear_report_transients();
 
-				$redirect_url = remove_query_arg( array( 'action' ), stripslashes( $_SERVER['REQUEST_URI'] ) );
-				wp_redirect( esc_url_raw( $redirect_url ) );
+				wp_redirect( esc_url_raw( remove_query_arg( array( 'action' ), stripslashes( $_SERVER['REQUEST_URI'] ) ) ) );
 				exit;
 			}
 		}
@@ -410,7 +411,7 @@ class WC_COG_Admin {
 	public function load_styles_scripts( $hook_suffix ) {
 		global $post_type;
 
-		if ( in_array( $post_type, array( 'product', 'shop_order' ) ) && in_array( $hook_suffix, array( 'edit.php', 'post.php', 'post-new.php' ) ) ) {
+		if ( in_array( $post_type, array( 'product', 'shop_order' ), true ) && in_array( $hook_suffix, array( 'edit.php', 'post.php', 'post-new.php' ), true ) ) {
 
 			$dependencies = 'products' === $post_type ? array( 'jquery', 'wc-admin-product-meta-boxes', 'woocommerce_admin' ) : array( 'jquery', 'woocommerce_admin' );
 

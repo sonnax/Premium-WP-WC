@@ -14,11 +14,11 @@
  *
  * Do not edit or add to this file if you wish to upgrade WooCommerce Cost of Goods to newer
  * versions in the future. If you wish to customize WooCommerce Cost of Goods for your
- * needs please refer to http://docs.woothemes.com/document/cost-of-goods/ for more information.
+ * needs please refer to http://docs.woocommerce.com/document/cost-of-goods/ for more information.
  *
  * @package     WC-COG/Admin/Orders
  * @author      SkyVerge
- * @copyright   Copyright (c) 2013-2016, SkyVerge, Inc.
+ * @copyright   Copyright (c) 2013-2017, SkyVerge, Inc.
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
@@ -32,7 +32,6 @@ defined( 'ABSPATH' ) or exit;
  * @since 2.0.0
  */
 class WC_COG_Admin_Orders {
-
 
 
 	/**
@@ -110,7 +109,7 @@ class WC_COG_Admin_Orders {
 	 * @param int $item_id
 	 */
 	public function add_order_item_cost( $product, $item, $item_id ) {
-		global $pagenow, $theorder;
+		global $pagenow;
 
 		// do not add for orders being created manually and not saved yet
 		if ( 'post-new.php' === $pagenow ) {
@@ -118,53 +117,61 @@ class WC_COG_Admin_Orders {
 		}
 
 		// empty cell for refunds or where product is null
-		if ( ! is_array( $item ) || ! $product instanceof WC_Product ) {
+		if ( ! $item || ! $product instanceof WC_Product ) {
+
 			echo '<td width="1%">&nbsp;</td>';
-			return;
-		}
 
-		$item_qty = isset( $item['qty'] ) ? max( 1, intval( $item['qty'] ) ) : 1;
-		$item_cost = wc_get_order_item_meta( $item_id, '_wc_cog_item_total_cost', true );
+		} else {
 
-		// set default cost if item cost doesn't exist
-		if ( false === $item_cost ) {
-			$item_cost = floatval( WC_COG_Product::get_cost( $product ) ) * $item_qty;
-		}
+			if ( is_array( $item ) ) {
+				$item_qty = isset( $item['qty'] ) ? max( 1, (int) $item['qty'] ) : 1;
+			} elseif ( $item instanceof WC_Order_Item ) {
+				$item_qty = $item->get_quantity();
+			} else {
+				return;
+			}
 
-		$decimals = wc_get_price_decimals();
+			$item_cost = wc_get_order_item_meta( $item_id, '_wc_cog_item_total_cost', true );
 
-		// number input stepper value
-		$steps = $decimals > 0 ? '0.' . str_repeat( '0', $decimals - 1 ) . '1' : 1;
+			// set default cost if item cost doesn't exist
+			if ( false === $item_cost ) {
+				$item_cost = (float) WC_COG_Product::get_cost( $product ) * $item_qty;
+			}
 
-		$formatted_item_cost = wc_format_decimal( $item_cost, $decimals );
+			$decimals = wc_get_price_decimals();
 
-		?>
-		<td class="item_cost_of_goods" width="1%">
+			// number input stepper value
+			$steps = $decimals > 0 ? '0.' . str_repeat( '0', $decimals - 1 ) . '1' : 1;
 
-			<div class="view">
-				<?php
-					// WooCommerce 2.6 added a "nicer" value editor for order line items
+			$formatted_item_cost = wc_format_decimal( $item_cost, $decimals );
+
+			?>
+			<td class="item_cost_of_goods" width="1%">
+
+				<div class="view">
+					<?php // WooCommerce 2.6 added a "nicer" value editor for order line items
 					// TODO: when WC 2.6 is required, it would be nice to give this a refresh for enhanced cost editing {BR 2016-05-18}
-					echo wc_price( $formatted_item_cost );
+					echo wc_price( $formatted_item_cost ); ?>
+					<?php if ( $refunded_item_total_cost = $this->get_total_cost_refunded_for_item( $item_id ) ) : ?>
+						<small class="refunded"><?php echo wc_price( $refunded_item_total_cost ); ?></small>
+					<?php endif; ?>
+				</div>
 
-					if ( $refunded_item_total_cost = $this->get_total_cost_refunded_for_item( $item_id, $theorder ) ) {
-						echo '<small class="refunded">' . wc_price( $refunded_item_total_cost ) . '</small>';
-					}
-				?>
-			</div>
+				<div class="edit edit-cog" style="display: none;">
+					<input
+						type="number"
+						name="item_cost_of_goods[<?php echo esc_attr( $item_id ); ?>]"
+						min="0"
+						step="<?php echo esc_attr( $steps ); ?>"
+						style="text-align: right; width: 70px;"
+						placeholder="0"
+						value="<?php echo esc_attr( $formatted_item_cost ); ?>">
+				</div>
 
-			<div class="edit edit-cog" style="display: none;">
-				<input type="number"
-					   name="item_cost_of_goods[<?php echo esc_attr( $item_id ); ?>]"
-					   min="0"
-					   step="<?php echo esc_attr( $steps ); ?>"
-					   style="text-align: right; width: 70px;"
-					   placeholder="0"
-					   value="<?php echo esc_attr( $formatted_item_cost ); ?>">
-			</div>
+			</td>
+			<?php
 
-		</td>
-		<?php
+		}
 	}
 
 
@@ -278,7 +285,7 @@ class WC_COG_Admin_Orders {
 		$order_cost_total = apply_filters( 'wc_cost_of_goods_update_order_cost_meta', $order_cost_total, wc_get_order( $order_id ) );
 
 		// update the total order cost
-		update_post_meta( $order_id, '_wc_cog_order_total_cost', wc_format_decimal( $order_cost_total, wc_get_price_decimals() ) );
+		SV_WC_Order_Compatibility::update_meta_data( wc_get_order( $order_id ), '_wc_cog_order_total_cost', wc_format_decimal( $order_cost_total, wc_get_price_decimals() ) );
 	}
 
 
@@ -334,14 +341,19 @@ class WC_COG_Admin_Orders {
 	public function show_order_total_cost( $post_id ) {
 		?>
 			<tr>
+
 				<td class="total cost-total"><?php esc_html_e( 'Cost of Goods', 'woocommerce-cost-of-goods' ); ?>:</td>
+
 				<?php if ( SV_WC_Plugin_Compatibility::is_wc_version_gte_2_6() ) : ?>
-				<td></td>
+					<td></td>
 				<?php endif; ?>
+
 				<td class="total cost-total"><?php echo $this->get_formatted_order_total_cost( $post_id ); ?></td>
+
 				<?php if ( SV_WC_Plugin_Compatibility::is_wc_version_lt_2_6() ) : ?>
-				<td width="1%"></td>
+					<td width="1%"></td>
 				<?php endif; ?>
+
 			</tr>
 		<?php
 	}
@@ -358,14 +370,14 @@ class WC_COG_Admin_Orders {
 	protected function get_formatted_order_total_cost( $order_id ) {
 
 		$order            = wc_get_order( $order_id );
-		$order_total_cost = $order->wc_cog_order_total_cost;
+		$order_total_cost = SV_WC_Order_Compatibility::get_meta( $order, '_wc_cog_order_total_cost', true );
 		$formatted_total  = wc_price( $order_total_cost );
 
 		$refunded_order_total_cost = 0;
 
 		foreach ( $order->get_refunds() as $refund ) {
 
-			$refunded_order_total_cost += floatval( $refund->wc_cog_order_total_cost );
+			$refunded_order_total_cost += (float) SV_WC_Order_Compatibility::get_meta( $refund, '_wc_cog_order_total_cost', true );
 		}
 
 		if ( $refunded_order_total_cost < 0 ) {
@@ -404,10 +416,12 @@ class WC_COG_Admin_Orders {
 		foreach ( $refund->get_items() as $refund_line_item_id => $refund_line_item ) {
 
 			// skip line items that aren't actually being refunded or the original refunded item ID isn't available
-			if ( ! isset( $refund_line_item['line_total'] ) || $refund_line_item['line_total'] >= 0 ||
-				 ! isset( $refund_line_item['qty'] ) || abs( $refund_line_item['qty'] ) == 0 ||
-				 empty( $refund_line_item['refunded_item_id'] ) )
-			{
+			if (    ! isset( $refund_line_item['line_total'] )
+			     ||   $refund_line_item['line_total'] >= 0
+			     || ! isset( $refund_line_item['qty'] )
+			     ||   abs( $refund_line_item['qty'] ) === 0
+			     ||   empty( $refund_line_item['refunded_item_id'] ) ) {
+
 				continue;
 			}
 
@@ -451,7 +465,8 @@ class WC_COG_Admin_Orders {
 		$refund_total_cost = apply_filters( 'wc_cost_of_goods_update_refund_order_cost_meta', $refund_total_cost, $refund );
 
 		// update the refund total cost
-		update_post_meta( $refund->id, '_wc_cog_order_total_cost', wc_format_decimal( $refund_total_cost, wc_get_price_decimals() ) );
+		SV_WC_Order_Compatibility::update_meta_data( $refund, '_wc_cog_order_total_cost', wc_format_decimal( $refund_total_cost, wc_get_price_decimals() ) );
 	}
+
 
 }

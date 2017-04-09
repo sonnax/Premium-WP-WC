@@ -14,7 +14,7 @@
  *
  * Do not edit or add to this file if you wish to upgrade WooCommerce Cost of Goods to newer
  * versions in the future. If you wish to customize WooCommerce Cost of Goods for your
- * needs please refer to http://docs.woothemes.com/document/cost-of-goods/ for more information.
+ * needs please refer to http://docs.woocommerce.com/document/cost-of-goods/ for more information.
  *
  * @package     WC-COG/API
  * @author      SkyVerge
@@ -57,20 +57,20 @@ class WC_COG_REST_API {
 	 *
 	 * @since 2.0.0
 	 * @param array $data current response data
-	 * @param \WC_Order $resource WC_Order instance that the REST API is pulling data from
+	 * @param \WC_Order $order WC_Order instance that the REST API is pulling data from
 	 * @return array
 	 */
-	public function insert_order_cost_data( $data, $resource ) {
+	public function insert_order_cost_data( $data, $order ) {
 
 		// sanity check
-		if ( ! is_array( $data ) || ! $resource instanceof WC_Order ) {
+		if ( ! is_array( $data ) || ! $order instanceof WC_Order ) {
 			return $data;
 		}
 
-		$order_total_cost = get_post_meta( $resource->id, '_wc_cog_order_total_cost', true );
+		$order_total_cost = SV_WC_Order_Compatibility::get_meta( $order, '_wc_cog_order_total_cost', true );
 
 		// order total cost
-		$data['cogs_total_cost'] = floatval( $order_total_cost ) > 0.00 ? wc_format_decimal( $order_total_cost ) : null;
+		$data['cogs_total_cost'] = (float) $order_total_cost > 0.00 ? wc_format_decimal( $order_total_cost ) : null;
 
 		// add line item costs
 		if ( ! empty( $data['line_items'] ) ) {
@@ -80,12 +80,12 @@ class WC_COG_REST_API {
 				// item cost
 				$item_cost = wc_get_order_item_meta( $item['id'], '_wc_cog_item_cost', true );
 
-				$data['line_items'][ $index ]['cogs_cost'] = floatval( $item_cost ) > 0.00 ? wc_format_decimal( $item_cost, wc_get_price_decimals() ) : null;
+				$data['line_items'][ $index ]['cogs_cost'] = (float) $item_cost > 0.00 ? wc_format_decimal( $item_cost, wc_get_price_decimals() ) : null;
 
 				// item total cost
 				$item_total_cost = wc_get_order_item_meta( $item['id'], '_wc_cog_item_total_cost', true );
 
-				$data['line_items'][ $index ]['cogs_total_cost'] = floatval( $item_total_cost ) > 0.00 ? wc_format_decimal( $item_total_cost, wc_get_price_decimals() ) : null;
+				$data['line_items'][ $index ]['cogs_total_cost'] = (float) $item_total_cost > 0.00 ? wc_format_decimal( $item_total_cost, wc_get_price_decimals() ) : null;
 			}
 		}
 
@@ -110,7 +110,7 @@ class WC_COG_REST_API {
 
 		$product_cost = WC_COG_Product::get_cost( $resource );
 
-		$data['cogs_cost'] = floatval( $product_cost ) > 0.00 ? wc_format_decimal( $product_cost ) : null;
+		$data['cogs_cost'] = (float) $product_cost > 0.00 ? wc_format_decimal( $product_cost ) : null;
 
 		return $data;
 	}
