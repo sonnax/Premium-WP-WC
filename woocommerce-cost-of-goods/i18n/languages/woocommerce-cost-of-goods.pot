@@ -1,0 +1,430 @@
+# Copyright (C) 2016 WooThemes / SkyVerge
+# This file is distributed under the GNU General Public License v3.0.
+msgid ""
+msgstr ""
+"Project-Id-Version: WooCommerce Cost of Goods 2.2.7\n"
+"Report-Msgid-Bugs-To: https://woocommerce.com/my-account/tickets/\n"
+"POT-Creation-Date: 2014-06-15 22:41:24+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2016-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#: includes/admin/class-wc-cog-admin-orders.php:98
+#: includes/admin/class-wc-cog-admin-orders.php:337
+msgid "Cost of Goods"
+msgstr ""
+
+#: includes/admin/class-wc-cog-admin-products.php:128
+#: includes/admin/class-wc-cog-admin-products.php:148
+#: includes/admin/class-wc-cog-admin-products.php:528
+#. translators: Placeholder: %s - currency symbol
+msgid "Cost of Good (%s)"
+msgstr ""
+
+#: includes/admin/class-wc-cog-admin-products.php:151
+msgid "Default cost for product variations"
+msgstr ""
+
+#: includes/admin/class-wc-cog-admin-products.php:182
+msgid "Set cost"
+msgstr ""
+
+#: includes/admin/class-wc-cog-admin-products.php:235
+#. translators: Placeholder: %s - currency symbol
+msgid "Cost of Good: (%s)"
+msgstr ""
+
+#: includes/admin/class-wc-cog-admin-products.php:363
+msgid "Cost of Good"
+msgstr ""
+
+#: includes/admin/class-wc-cog-admin-products.php:368
+msgid "— No Change —"
+msgstr ""
+
+#: includes/admin/class-wc-cog-admin-products.php:369
+msgid "Change to:"
+msgstr ""
+
+#: includes/admin/class-wc-cog-admin-products.php:370
+msgid "Increase by (fixed amount or %):"
+msgstr ""
+
+#: includes/admin/class-wc-cog-admin-products.php:371
+msgid "Decrease by (fixed amount or %):"
+msgstr ""
+
+#: includes/admin/class-wc-cog-admin-products.php:381
+msgid "Enter Cost:"
+msgstr ""
+
+#: includes/admin/class-wc-cog-admin-products.php:460
+#: includes/admin/class-wc-cog-admin-products.php:572
+msgid "Cost"
+msgstr ""
+
+#: includes/admin/class-wc-cog-admin-reports.php:62
+msgid "Profit"
+msgstr ""
+
+#: includes/admin/class-wc-cog-admin-reports.php:65
+msgid "Profit by date"
+msgstr ""
+
+#: includes/admin/class-wc-cog-admin-reports.php:71
+msgid "Profit by product"
+msgstr ""
+
+#: includes/admin/class-wc-cog-admin-reports.php:77
+msgid "Profit by category"
+msgstr ""
+
+#: includes/admin/class-wc-cog-admin-reports.php:88
+msgid "Product Valuation"
+msgstr ""
+
+#: includes/admin/class-wc-cog-admin-reports.php:94
+msgid "Total Valuation"
+msgstr ""
+
+#: includes/admin/class-wc-cog-admin-reports.php:95
+msgid ""
+"Total valuation provides the value of all inventory within your store at "
+"both the cost of the good, as well as the total value of inventory at the "
+"retail price (regular price, or sale price if set). Stock count must be set "
+"to be included in this valuation."
+msgstr ""
+
+#: includes/admin/class-wc-cog-admin.php:163
+msgid "Cost of Goods Options"
+msgstr ""
+
+#: includes/admin/class-wc-cog-admin.php:170
+msgid "Exclude these item(s) from income when calculating profit. "
+msgstr ""
+
+#: includes/admin/class-wc-cog-admin.php:171
+msgid "Fees charged to customer (e.g. Checkout Add-Ons, Payment Gateway Based Fees)"
+msgstr ""
+
+#: includes/admin/class-wc-cog-admin.php:180
+msgid "Shipping charged to customer"
+msgstr ""
+
+#: includes/admin/class-wc-cog-admin.php:189
+msgid "Tax charged to customer"
+msgstr ""
+
+#: includes/admin/class-wc-cog-admin.php:220
+msgid "Apply Costs to Previous Orders"
+msgstr ""
+
+#: includes/admin/class-wc-cog-admin.php:221
+msgid ""
+"This will apply costs to previous orders based on your selection when "
+"\"Apply Costs\" is clicked and cannot be reversed."
+msgstr ""
+
+#: includes/admin/class-wc-cog-admin.php:226
+msgid "Apply costs to orders that do not have costs set"
+msgstr ""
+
+#: includes/admin/class-wc-cog-admin.php:227
+msgid "Apply costs to all orders, overriding previous costs."
+msgstr ""
+
+#: includes/admin/class-wc-cog-admin.php:229
+msgid "Choose carefully, there is no reversing either action!"
+msgstr ""
+
+#: includes/admin/class-wc-cog-admin.php:232
+msgid "Apply Costs"
+msgstr ""
+
+#: includes/admin/class-wc-cog-admin.php:249
+msgid ""
+"Are you sure you want to apply costs to all previous orders that have not "
+"already had costs generated? This cannot be reversed! Note that this can "
+"take some time in shops with a large number of orders, if an error occurs, "
+"simply Apply Costs again to continue the process."
+msgstr ""
+
+#: includes/admin/class-wc-cog-admin.php:250
+msgid ""
+"Are you sure you want to apply costs to all previous orders, overriding "
+"those with existing costs? This cannot be reversed! Note that this can take "
+"some time in shops with a large number of orders, if an error occurs, "
+"simply Apply Costs again to continue the process."
+msgstr ""
+
+#: includes/admin/class-wc-cog-admin.php:324
+msgid "Database error while applying product costs."
+msgstr ""
+
+#: includes/admin/class-wc-cog-admin.php:364
+#. translators: Placeholders: %d - number of orders updated.
+msgid "%d order updated."
+msgid_plural "%d orders updated."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/admin/reports/abstract-wc-cog-admin-report.php:61
+msgid "Year"
+msgstr ""
+
+#: includes/admin/reports/abstract-wc-cog-admin-report.php:62
+msgid "Last Month"
+msgstr ""
+
+#: includes/admin/reports/abstract-wc-cog-admin-report.php:63
+msgid "This Month"
+msgstr ""
+
+#: includes/admin/reports/abstract-wc-cog-admin-report.php:64
+msgid "Last 7 Days"
+msgstr ""
+
+#: includes/admin/reports/abstract-wc-cog-admin-report.php:83
+msgid "Date"
+msgstr ""
+
+#: includes/admin/reports/abstract-wc-cog-admin-report.php:100
+msgid "Export CSV"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-product-valuation.php:132
+msgid "Value at Retail"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-product-valuation.php:133
+msgid "Value at Cost"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-product-valuation.php:156
+msgid "Search for a product"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-category.php:109
+#. translators: Placeholders: %1$s - formatted total profit amount surrounded
+#. by <strong> tags, e.g. <strong>$66.77</strong>, %1$s - product category
+#. name, e.g. t-shirts
+msgid "%1$s total profit in %2$s"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-category.php:136
+msgid "Categories"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-category.php:154
+msgid "Select categories&hellip;"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-category.php:168
+msgid "None"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-category.php:169
+msgid "All"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-category.php:170
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-product.php:199
+msgid "Show"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-category.php:224
+msgid "&larr; Choose a category to view stats"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-date.php:62
+#. translators: Placeholders: %1$s is the formatted net sales amount with
+#. surrounding <strong> tags, e.g. <strong>$7.77</strong>
+msgid "%1$s net sales in this period"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-date.php:63
+msgid ""
+"This is the sum of the order totals after any refunds and excluding fees, "
+"taxes, and shipping (unless you have toggled the settings to include them)"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-date.php:71
+#. translators: Placeholders: %1$s is the formatted total cost of goods amount
+#. with surrounding <strong> tags, e.g. <strong>$2.00</strong>
+msgid "%1$s total cost of goods in this period"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-date.php:72
+msgid "This is the sum of the item cost of goods after any refunds"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-date.php:80
+#. translators: Placeholders: %1$s is the formatted total profit amount with
+#. surrounding <strong> tags, e.g. <strong>$5.77</strong>
+msgid "%1$s total profit in this period"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-date.php:81
+msgid "This is the sum of the order profit after any refunds"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-date.php:89
+#. translators: Placeholders: %1$s is the total orders count with surrounding
+#. <strong> tags, e.g. <strong>7</strong>
+msgid "%1$s orders placed"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-date.php:97
+#. translators: Placeholders: %1$s is the formatted average profit per order
+#. amount with surrounding <strong> tags, e.g. <strong>$1.77</strong>
+msgid "%1$s average profit per order in this period"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-date.php:98
+msgid "This is the average profit per order after any refunds"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-date.php:179
+msgid "Number of orders"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-date.php:187
+msgid "Net Sales amount"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-date.php:197
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-product.php:382
+msgid "Cost of Goods Sold"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-date.php:207
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-product.php:392
+msgid "Profit amount"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-product.php:94
+#. translators: Placeholders: %1$s is the formatted total product sales with
+#. surrounding <strong> tags, e.g. <strong>$7.77</strong>
+msgid "%1$s sales for the selected items"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-product.php:102
+#. translators: Placeholders: %1$s is the formatted total product cost of goods
+#. with surrounding <strong> tags, e.g. <strong>$4.77</strong>
+msgid "%1$s cost of goods for the selected items"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-product.php:110
+#. translators: Placeholders: %1$s is the formatted total product profit with
+#. surrounding <strong> tags, e.g. <strong>$3.00</strong>
+msgid "%1$s profit for the selected items"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-product.php:118
+#. translators: Placeholders: %1$s is the the total number of purchased items
+#. with surrounding <strong> tags, e.g. <strong>5</strong>
+msgid "%1$s purchases for the selected items"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-product.php:145
+msgid "Product Search"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-product.php:158
+msgid "Showing reports for:"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-product.php:183
+msgid "Reset"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-product.php:198
+msgid "Search for a product&hellip;"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-product.php:222
+msgid "Least Profitable Sellers"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-product.php:225
+msgid "Most Profitable Sellers"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-product.php:267
+#. translators: Placeholders: %1$s - profit margin as a percentage, e.g. 85.4%
+msgid "%1$s%% profit margin"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-product.php:268
+msgid "total profit"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-product.php:275
+msgid "No products found in range"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-product.php:279
+msgid "show most profitable"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-product.php:281
+msgid "show least profitable"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-product.php:328
+msgid "&larr; Choose a product to view stats"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-product.php:364
+msgid "Number of items sold"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-profit-by-product.php:372
+msgid "Sales amount"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-total-valuation.php:58
+msgid "at cost"
+msgstr ""
+
+#: includes/admin/reports/class-wc-cog-admin-report-total-valuation.php:62
+msgid "at retail"
+msgstr ""
+
+#: woocommerce-cost-of-goods.php:44
+msgid "WooCommerce Costs of Goods"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "WooCommerce Cost of Goods"
+msgstr ""
+
+#: woocommerce-cost-of-goods.php:526 woocommerce-cost-of-goods.php:590
+#. translators: Placeholders: %s - error messages
+msgid "Error upgrading <strong>WooCommerce Cost of Goods</strong>: %s"
+msgstr ""
+
+#: woocommerce-cost-of-goods.php:527 woocommerce-cost-of-goods.php:591
+msgid "&laquo; Go Back"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "http://www.woothemes.com/products/woocommerce-cost-of-goods/"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"A full-featured cost of goods management extension for WooCommerce, with "
+"detailed reporting for total cost and profit"
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "WooThemes / SkyVerge"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://www.woothemes.com"
+msgstr ""
